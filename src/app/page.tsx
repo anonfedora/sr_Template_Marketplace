@@ -1,11 +1,9 @@
 import React from "react";
-import Header from "./components/Header";
 import boost from "../../public/boost.svg";
 import efficient from "../../public/efficient.svg";
 import high from "../../public/high.svg";
 import rightArr from "../../public/right-arr.svg";
 import Image from "next/image";
-import Footer from "./components/Footer";
 
 const powered = [
   {
@@ -28,8 +26,6 @@ const powered = [
 export default function Home() {
   return (
     <div className="">
-      <Header />
-
       {/* Welcome to stellar Section */}
       <div className=" text-center px-6 py-16 sm:py-24 bg-linear-to-r from-[#f6f6f7] to-[#F4F4F5]">
         <h1 className=" font-bold text-4xl">Welcome to Stellar Market</h1>
@@ -101,8 +97,6 @@ export default function Home() {
           <Image src={rightArr} alt="img icon" />,
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }
