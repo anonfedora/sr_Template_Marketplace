@@ -4,6 +4,7 @@ import efficient from "../../public/efficient.svg";
 import high from "../../public/high.svg";
 import rightArr from "../../public/right-arr.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 const powered = [
   {
@@ -32,9 +33,11 @@ export default function Home() {
         <p className=" py-6 text-xl text-[#71717A]">
           The future of e-commerce, powered by Stellar blockchain technology
         </p>
-        <button className="bg-black mt-4 mb-2 text-white py-3 px-5 cursor-pointer rounded">
-          Explore Products
-        </button>
+        <Link href={"/marketplace"}>
+          <button className="bg-black mt-4 mb-2 text-white py-3 px-5 cursor-pointer rounded">
+            Explore Products
+          </button>
+        </Link>
       </div>
 
       {/* Why Choose Stellar Market Section */}
