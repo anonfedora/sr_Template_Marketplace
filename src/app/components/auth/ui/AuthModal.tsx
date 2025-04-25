@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/app/components/ui/dialog";
-import { X } from "lucide-react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -22,6 +21,7 @@ export default function AuthModal({
       <DialogContent
         className={`${maxWidth} p-0 overflow-hidden bg-black text-white border-zinc-800`}
       >
+        <DialogTitle className="sr-only">Your title</DialogTitle>
         <div className="p-6">{children}</div>
       </DialogContent>
     </Dialog>
