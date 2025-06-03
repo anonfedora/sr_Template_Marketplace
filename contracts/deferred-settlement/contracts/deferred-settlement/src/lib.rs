@@ -2,16 +2,16 @@
 use soroban_sdk::{contract, contractimpl, Address, Env, Symbol};
 
 mod admin;
-mod transaction;
-mod settlement;
 mod dispute;
 mod query;
+mod settlement;
+mod transaction;
 mod types;
 
 #[cfg(test)]
 mod test;
 
-use types::{DeferredTransaction, SettlementCondition, DataKey};
+use types::{DataKey, DeferredTransaction, SettlementCondition};
 
 #[contract]
 pub struct DeferredSettlementContract;
@@ -27,7 +27,9 @@ impl DeferredSettlementContract {
         if !admin::is_admin(&env, &admin) {
             panic!("Unauthorized");
         }
-        env.storage().instance().set(&DataKey::TokenContract, &token_contract);
+        env.storage()
+            .instance()
+            .set(&DataKey::TokenContract, &token_contract);
     }
 
     pub fn create_transaction(
@@ -39,15 +41,26 @@ impl DeferredSettlementContract {
         duration: u64,
     ) -> u128 {
         let condition = match condition {
-            condition if condition == Symbol::new(&env, "TimeBased") => SettlementCondition::TimeBased,
-            condition if condition == Symbol::new(&env, "BuyerApproval") => SettlementCondition::BuyerApproval,
-            condition if condition == Symbol::new(&env, "OracleConfirmation") => SettlementCondition::OracleConfirmation,
+            condition if condition == Symbol::new(&env, "TimeBased") => {
+                SettlementCondition::TimeBased
+            }
+            condition if condition == Symbol::new(&env, "BuyerApproval") => {
+                SettlementCondition::BuyerApproval
+            }
+            condition if condition == Symbol::new(&env, "OracleConfirmation") => {
+                SettlementCondition::OracleConfirmation
+            }
             _ => panic!("Invalid condition"),
         };
         transaction::create_transaction(env, buyer, seller, amount, condition, duration).unwrap()
     }
 
-    pub fn verify_condition(env: Env, caller: Address, transaction_id: u128, oracle_input: Option<bool>) {
+    pub fn verify_condition(
+        env: Env,
+        caller: Address,
+        transaction_id: u128,
+        oracle_input: Option<bool>,
+    ) {
         settlement::verify_condition(env, caller, transaction_id, oracle_input).unwrap()
     }
 
@@ -55,7 +68,12 @@ impl DeferredSettlementContract {
         dispute::initiate_dispute(env, caller, transaction_id).unwrap()
     }
 
-    pub fn resolve_dispute(env: Env, caller: Address, transaction_id: u128, release_to_seller: bool) {
+    pub fn resolve_dispute(
+        env: Env,
+        caller: Address,
+        transaction_id: u128,
+        release_to_seller: bool,
+    ) {
         dispute::resolve_dispute(env, caller, transaction_id, release_to_seller).unwrap()
     }
 

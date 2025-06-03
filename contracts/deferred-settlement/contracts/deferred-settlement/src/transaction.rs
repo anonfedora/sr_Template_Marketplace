@@ -1,5 +1,7 @@
-use crate::types::{DataKey, DeferredTransaction, SettlementCondition, TransactionStatus, TransactionEvent, Error};
-use soroban_sdk::{Address, Env, Symbol, token};
+use crate::types::{
+    DataKey, DeferredTransaction, Error, SettlementCondition, TransactionEvent, TransactionStatus,
+};
+use soroban_sdk::{token, Address, Env, Symbol};
 
 pub fn create_transaction(
     env: Env,
@@ -15,7 +17,9 @@ pub fn create_transaction(
         return Err(Error::InvalidAmount);
     }
 
-    let transaction_id: u128 = env.storage().instance()
+    let transaction_id: u128 = env
+        .storage()
+        .instance()
         .get(&DataKey::TotalTransactions)
         .unwrap_or(0);
 
@@ -31,18 +35,30 @@ pub fn create_transaction(
     };
 
     // Get the token contract ID from storage or environment
-    let token_contract_id = env.storage().instance().get(&DataKey::TokenContract)
+    let token_contract_id = env
+        .storage()
+        .instance()
+        .get(&DataKey::TokenContract)
         .ok_or(Error::TokenContractNotSet)?;
     let token_client = token::Client::new(&env, &token_contract_id);
     token_client.transfer(&buyer, &env.current_contract_address(), &amount);
 
     // Store transaction
-    env.storage().instance().set(&DataKey::Transaction(transaction_id), &transaction);
-    env.storage().instance().set(&DataKey::TotalTransactions, &(transaction_id + 1));
+    env.storage()
+        .instance()
+        .set(&DataKey::Transaction(transaction_id), &transaction);
+    env.storage()
+        .instance()
+        .set(&DataKey::TotalTransactions, &(transaction_id + 1));
 
     // Emit event
-    env.events().publish(("DeferredSettlement", Symbol::new(&env, "transaction_created")),
-        TransactionEvent::TransactionCreated(transaction_id, buyer, seller, amount));
+    env.events().publish(
+        (
+            "DeferredSettlement",
+            Symbol::new(&env, "transaction_created"),
+        ),
+        TransactionEvent::TransactionCreated(transaction_id, buyer, seller, amount),
+    );
 
     Ok(transaction_id)
 }
